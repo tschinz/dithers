@@ -207,6 +207,14 @@ pub const TWOROWSIERRA: [f32; 10] = [
 ];
 pub const SIERRALITE: [f32; 6] = [0.0, 0.0, 2.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 0.0];
 
+/// Opens an image file and returns its RGB buffer, width, and height.
+///
+/// # Panics
+///
+/// This function will panic if:
+/// - The image file cannot be opened
+/// - The image cannot be decoded
+#[must_use]
 pub fn open_image(path: &PathBuf) -> (Vec<u8>, u32, u32) {
   //let image = ImageReader::open(path).unwrap().decode().unwrap().into_rgba8();
   let image = ImageReader::open(path).unwrap().decode().unwrap().into_rgb8();
@@ -220,7 +228,7 @@ pub fn save_image(buffer: Vec<u8>, path: PathBuf, width: u32, height: u32) {
   let _ = image::save_buffer(path, &buffer, width, height, ExtendedColorType::Rgb8);
 }
 
-pub fn dither(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_palette: ColorPalette, width: u32, height: u32) {
+pub fn dither(buffer: &mut [u8], dither_type: DitherMethod, color_palette: ColorPalette, width: u32, height: u32) {
   // get the color palette as slice
   let color_palette = match color_palette {
     ColorPalette::Monochrome => &PALETTE_MONOCHROME[..],
@@ -250,7 +258,7 @@ pub fn dither(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_palette: Co
   }
 }
 
-fn apply_error_diffusion(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_palette: &[Color], width: u32, height: u32) {
+fn apply_error_diffusion(buffer: &mut [u8], dither_type: DitherMethod, color_palette: &[Color], width: u32, height: u32) {
   // Define kernel patterns for each algorithm
   let (kernel, kernel_width, kernel_height, kernel_x_offset) = match dither_type {
     DitherMethod::FloydSteinberg => (&FLOYD_STEINBERG[..], 3, 2, 1),
@@ -294,16 +302,16 @@ fn apply_error_diffusion(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_
           }
 
           let ni = ((ny as u32 * width + nx as u32) * 3) as usize;
-          buffer[ni] = (buffer[ni] as f32 + (qe.r * kernel[ki])).round().clamp(0.0, 255.0) as u8;
-          buffer[ni + 1] = (buffer[ni + 1] as f32 + (qe.g * kernel[ki])).round().clamp(0.0, 255.0) as u8;
-          buffer[ni + 2] = (buffer[ni + 2] as f32 + (qe.b * kernel[ki])).round().clamp(0.0, 255.0) as u8;
+          buffer[ni] = (f32::from(buffer[ni]) + (qe.r * kernel[ki])).round().clamp(0.0, 255.0) as u8;
+          buffer[ni + 1] = (f32::from(buffer[ni + 1]) + (qe.g * kernel[ki])).round().clamp(0.0, 255.0) as u8;
+          buffer[ni + 2] = (f32::from(buffer[ni + 2]) + (qe.b * kernel[ki])).round().clamp(0.0, 255.0) as u8;
         }
       }
     }
   }
 }
 
-fn apply_bayer_dithering(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_palette: &[Color], width: u32, height: u32) {
+fn apply_bayer_dithering(buffer: &mut [u8], dither_type: DitherMethod, color_palette: &[Color], width: u32, height: u32) {
   let (matrix, matrix_size) = match dither_type {
     DitherMethod::Bayer2x2 => (&BAYER2X2[..], 2),
     DitherMethod::Bayer4x4 => (&BAYER4X4[..], 4),
@@ -320,9 +328,9 @@ fn apply_bayer_dithering(buffer: &mut Vec<u8>, dither_type: DitherMethod, color_
 
       // Apply threshold to each color channel
       let mut color = Color::from(&buffer[i..i + 3]);
-      color.r = ((color.r as f32 / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
-      color.g = ((color.g as f32 / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
-      color.b = ((color.b as f32 / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
+      color.r = ((f32::from(color.r) / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
+      color.g = ((f32::from(color.g) / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
+      color.b = ((f32::from(color.b) / 255.0 + threshold - 0.5).clamp(0.0, 1.0) * 255.0) as u8;
 
       let (new_color, _) = map_to_palette(color, color_palette);
       buffer[i] = new_color.r;

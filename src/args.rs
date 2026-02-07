@@ -28,7 +28,6 @@ pub struct Args {
   pub color_palette: ColorPalette,
 }
 
-
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -37,7 +36,7 @@ mod tests {
   fn test_args_default_values() {
     // Test that default values work as expected when parsing minimal args
     let args = Args::try_parse_from(&["dithers", "-i", "test.jpg"]).unwrap();
-    
+
     assert_eq!(args.in_img, PathBuf::from("test.jpg"));
     assert_eq!(args.out_img, Some(PathBuf::from("out.png")));
     assert_eq!(args.dither_type, DitherMethod::FloydSteinberg);
@@ -46,14 +45,8 @@ mod tests {
 
   #[test]
   fn test_args_full_specification() {
-    let args = Args::try_parse_from(&[
-      "dithers", 
-      "-i", "input.png",
-      "-o", "output.jpg", 
-      "-d", "atkinson",
-      "-c", "color16"
-    ]).unwrap();
-    
+    let args = Args::try_parse_from(&["dithers", "-i", "input.png", "-o", "output.jpg", "-d", "atkinson", "-c", "color16"]).unwrap();
+
     assert_eq!(args.in_img, PathBuf::from("input.png"));
     assert_eq!(args.out_img, Some(PathBuf::from("output.jpg")));
     assert_eq!(args.dither_type, DitherMethod::Atkinson);
@@ -75,9 +68,19 @@ mod tests {
   #[test]
   fn test_all_dither_methods_parseable() {
     let methods = [
-      "none", "floyd-steinberg", "simple2-d", "jarvis", "atkinson", 
-      "stucki", "burkes", "sierra", "two-row-sierra", "sierra-lite",
-      "bayer2x2", "bayer4x4", "bayer8x8"
+      "none",
+      "floyd-steinberg",
+      "simple2-d",
+      "jarvis",
+      "atkinson",
+      "stucki",
+      "burkes",
+      "sierra",
+      "two-row-sierra",
+      "sierra-lite",
+      "bayer2x2",
+      "bayer4x4",
+      "bayer8x8",
     ];
 
     for method in methods {

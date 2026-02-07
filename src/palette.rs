@@ -54,7 +54,7 @@ pub fn map_to_palette(orig_color: Color, palette: &[Color]) -> (&Color, Quantiza
       //((orig_color.r as f32 - c.r as f32).powi(2) + (orig_color.g as f32 - c.g as f32).powi(2) + (orig_color.b as f32 - c.b as f32).powi(2)).sqrt();
       (orig_color.r as f32 - c.r as f32).powi(2) + (orig_color.g as f32 - c.g as f32).powi(2) + (orig_color.b as f32 - c.b as f32).powi(2);
     if distance < min_distance {
-      color = &c;
+      color = c;
       min_distance = distance;
     }
   }
