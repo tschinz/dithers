@@ -88,29 +88,29 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czf ../../../md-pdf-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.tar.gz md-pdf
+          tar -czf ../../../dithers-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.tar.gz dithers
           cd ../../..
 
       - name: Package binary (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
-          7z a ../../../md-pdf-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.zip md-pdf.exe
+          7z a ../../../dithers-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.zip dithers.exe
           cd ../../..
 
       - name: Upload binary artifact (Unix)
         if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: md-pdf-${{ matrix.target }}
-          path: md-pdf-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.tar.gz
+          name: dithers-${{ matrix.target }}
+          path: dithers-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.tar.gz
 
       - name: Upload binary artifact (Windows)
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: md-pdf-${{ matrix.target }}
-          path: md-pdf-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.zip
+          name: dithers-${{ matrix.target }}
+          path: dithers-${{ needs.prepare.outputs.release_version }}-${{ matrix.target }}.zip
 
   sbom:
     needs: [prepare]
@@ -137,7 +137,7 @@ jobs:
           # Create enhanced SBOM with additional metadata
           cat > enhanced_sbom.json << EOF
           {
-            "projectName": "md-pdf",
+            "projectName": "dithers",
             "projectVersion": "$VERSION",
             "tags": ["rust", "cli"],
             "sbom": $(cat sbom.json)
@@ -174,7 +174,7 @@ jobs:
       - name: Move build artifacts to expected location
         run: |
           mkdir -p output
-          find artifacts -name "md-pdf-*" -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} output/ \;
+          find artifacts -name "dithers-*" -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} output/ \;
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -182,8 +182,8 @@ jobs:
           RELEASE_VERSION: ${{ needs.prepare.outputs.release_version }}
         with:
           tag_name: ${{ env.RELEASE_VERSION }}
-          name: "md-pdf ${{ env.RELEASE_VERSION }}"
+          name: "dithers ${{ env.RELEASE_VERSION }}"
           body_path: artifacts/changelog/CHANGELOG.md
-          files: ./output/md-pdf-*
+          files: ./output/dithers-*
           draft: false
           prerelease: false
