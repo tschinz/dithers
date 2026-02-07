@@ -1,5 +1,5 @@
 [package]
-name = "dither-cli"
+name = "dithers"
 version = "0.1.0"
 edition = "2024"
 
@@ -9,9 +9,9 @@ image = "0.25.6"
 rayon = "1.10.0"
 
 [lib]
-name = "dither_lib"
+name = "dithers"
 path = "src/lib.rs"
 
 [[bin]]
-name = "dither-cli"
+name = "dithers"
 path = "src/main.rs"

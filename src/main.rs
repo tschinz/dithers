@@ -1,7 +1,13 @@
-use clap::Parser;
-use dither_lib::args::Args;
-use dither_lib::dither;
+//! CLI application for image dithering.
+//!
+//! This binary provides a command-line interface to the dither library,
+//! allowing users to apply various dithering algorithms to images.
 
+use clap::Parser;
+use dithers::args::Args;
+use dithers::dither;
+
+/// Main entry point for the dither CLI application.
 fn main() {
   // get cli arguments
   let args = Args::parse();
