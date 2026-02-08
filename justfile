@@ -34,6 +34,7 @@ install:
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     cargo install --locked trunk
     cargo install cargo-sbom
+    brew install trivy
 
 # install the release version (default is the latest)
 install-release release=release:
@@ -142,9 +143,48 @@ doc-build:
     cargo doc --no-deps --document-private-items
     @echo "✓ Documentation generated at target/doc/{{ crate_name }}/index.html"
 
-# Generate SBOM for Dependecy Track
+# Generate SBOM for Dependency Track
 sbom:
-    cargo sbom --output-format cyclone_dx_json_1_6 >> target/sbom-cyclone_dx_1_6.json
+    cargo sbom --output-format cyclone_dx_json_1_6 > target/sbom-cyclone_dx_1_6.json
+
+# Upload SBOM to Dependency Track (requires DT_API_KEY, DT_PROJECT_UUID, DT_BASE_URL env vars)
+sbom-upload:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Uploading SBOM to Dependency Track..."
+    # Load .env file if it exists
+    if [[ -f .env ]]; then
+        echo "Loading configuration from .env file..."
+        export $(grep -v '^#' .env | grep -v '^$' | xargs)
+    fi
+    if [[ -z "${DT_API_KEY:-}" ]] || [[ -z "${DT_PROJECT_UUID:-}" ]] || [[ -z "${DT_BASE_URL:-}" ]]; then
+        echo "Error: Required environment variables not set:"
+        echo "  DT_API_KEY - Your Dependency Track API key"
+        echo "  DT_PROJECT_UUID - Your project UUID"
+        echo "  DT_BASE_URL - Your Dependency Track base URL"
+        echo ""
+        echo "Example:"
+        echo "  export DT_BASE_URL=https://dt-api.zahno.dev"
+        echo "  export DT_API_KEY=your_api_key_here"
+        echo "  export DT_PROJECT_UUID=your_project_uuid_here"
+        echo "  just sbom-upload"
+        exit 1
+    fi
+    just sbom
+    curl -X POST "${DT_BASE_URL}/api/v1/bom" \
+        -H "X-Api-Key: ${DT_API_KEY}" \
+        -H "Content-Type: multipart/form-data" \
+        -F "project=${DT_PROJECT_UUID}" \
+        -F "bom=@target/sbom-cyclone_dx_1_6.json"
+    echo "✓ SBOM uploaded successfully to Dependency Track"
+
+# Clean security reports
+clean-security:
+    rm -f security-report.json trivy-results.sarif
+
+# Trivy comprehensive security scan (alias for backwards compatibility)
+trivy:
+    trivy fs --scanners vuln,secret,misconfig --format table .
 
 # output the help information
 help:

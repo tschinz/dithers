@@ -14,3 +14,13 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+
+# Environment files containing secrets
+.env
+.env.*
+!.env.template
+
+# Security reports
+security-report.json
+trivy-results.sarif
+supply-chain-report.json
