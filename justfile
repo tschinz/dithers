@@ -178,10 +178,6 @@ sbom-upload:
         -F "bom=@target/sbom-cyclone_dx_1_6.json"
     echo "✓ SBOM uploaded successfully to Dependency Track"
 
-# Clean security reports
-clean-security:
-    rm -f security-report.json trivy-results.sarif
-
 # Trivy comprehensive security scan (alias for backwards compatibility)
 trivy:
     trivy fs --scanners vuln,secret,misconfig --format table .
