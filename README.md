@@ -1,8 +1,8 @@
 # Dithers - Rust Image Dithering Library & CLI
 
-A fast and flexible **Rust image dithering toolkit** for applying various dithering algorithms to images.
+A flexible **Rust image dithering toolkit** for applying various dithering algorithms to images.
 
-A comprehensive toolkit featuring 13 different dithering algorithms and 3 color palettes.
+A toolkit featuring 13 different dithering algorithms and 3 color palettes.
 
 ## Features
 

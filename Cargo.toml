@@ -2,7 +2,16 @@
 name = "dithers"
 version = "0.1.0"
 edition = "2024"
-
+authors = ["tschinz"]
+license = "MIT"
+description = "A image dithering toolkit for applying various dithering algorithms to images."
+readme = "README.md"
+repository = "https://github.com/tschinz/dithers"
+categories = ["command-line-utilities", "computer-vision", "multimedia"]
+keywords = ["dithering", "image-processing", "command-line-tool", "floyd-steinberg", "atkinson", "jarvis-judice-ninke", "sierra", "burkes", "stucki", "ordered-dithering", "bayer-matrix"]
+exclude = [
+  ".github"
+]
 [dependencies]
 clap = { version = "4.5.39", features = ["derive"] }
 image = "0.25.6"
