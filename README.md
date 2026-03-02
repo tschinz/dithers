@@ -1,3 +1,7 @@
+![GitHub Repo stars](https://img.shields.io/github/stars/tschinz/dithers)
+![GitHub Release](https://img.shields.io/github/v/release/tschinz/dithers)
+![](https://tianji.zahno.dev/telemetry/clnzoxcy10001vy2ohi4obbi0/cmm9m3m3407u8kba1l7165l0s.gif)
+
 # Dithers - Rust Image Dithering Library & CLI
 
 A flexible **Rust image dithering toolkit** for applying various dithering algorithms to images.
