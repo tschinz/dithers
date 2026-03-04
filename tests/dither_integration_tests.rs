@@ -12,7 +12,7 @@ fn test_image_exists() {
 
 #[test]
 fn test_open_image() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
 
   assert!(width > 0, "Image width should be greater than 0");
   assert!(height > 0, "Image height should be greater than 0");
@@ -25,7 +25,7 @@ fn test_open_image() {
 
 #[test]
 fn test_floyd_steinberg_all_palettes() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let original_buffer = buffer.clone();
 
   // Test with monochrome
@@ -46,7 +46,7 @@ fn test_floyd_steinberg_all_palettes() {
 
 #[test]
 fn test_error_diffusion_algorithms() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let original_buffer = buffer.clone();
 
   let algorithms = [
@@ -70,7 +70,7 @@ fn test_error_diffusion_algorithms() {
 
 #[test]
 fn test_bayer_algorithms() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let original_buffer = buffer.clone();
 
   let algorithms = [DitherMethod::Bayer2x2, DitherMethod::Bayer4x4, DitherMethod::Bayer8x8];
@@ -84,7 +84,7 @@ fn test_bayer_algorithms() {
 
 #[test]
 fn test_no_dithering() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let original_buffer = buffer.clone();
 
   let mut test_buffer = original_buffer.clone();
@@ -96,7 +96,7 @@ fn test_no_dithering() {
 
 #[test]
 fn test_monochrome_palette_output() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let mut test_buffer = buffer;
 
   dither(&mut test_buffer, DitherMethod::FloydSteinberg, ColorPalette::Monochrome, width, height);
@@ -116,7 +116,7 @@ fn test_monochrome_palette_output() {
 
 #[test]
 fn test_save_and_cleanup() {
-  let (mut buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (mut buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
 
   dither(&mut buffer, DitherMethod::FloydSteinberg, ColorPalette::Monochrome, width, height);
 
@@ -131,7 +131,7 @@ fn test_save_and_cleanup() {
 
 #[test]
 fn test_all_algorithms_with_all_palettes() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
 
   let algorithms = [
     DitherMethod::None,
@@ -177,7 +177,7 @@ fn test_all_algorithms_with_all_palettes() {
 
 #[test]
 fn test_buffer_bounds() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
   let mut test_buffer = buffer;
 
   // Test with edge case: 1x1 image would be too small, so test with actual image
@@ -190,7 +190,7 @@ fn test_buffer_bounds() {
 
 #[test]
 fn test_different_algorithms_produce_different_results() {
-  let (buffer, width, height) = open_image(&PathBuf::from(TEST_IMAGE));
+  let (buffer, width, height) = open_image(PathBuf::from(TEST_IMAGE));
 
   let mut floyd_buffer = buffer.clone();
   let mut atkinson_buffer = buffer.clone();
