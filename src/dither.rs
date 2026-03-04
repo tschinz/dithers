@@ -1,6 +1,6 @@
 //! Image dithering algorithms and utilities.
 
-use std::path::PathBuf;
+use std::path::Path;
 
 use image::{ExtendedColorType, ImageReader};
 
@@ -215,7 +215,7 @@ pub const SIERRALITE: [f32; 6] = [0.0, 0.0, 2.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 0.0
 /// - The image file cannot be opened
 /// - The image cannot be decoded
 #[must_use]
-pub fn open_image(path: &PathBuf) -> (Vec<u8>, u32, u32) {
+pub fn open_image<P: AsRef<Path>>(path: P) -> (Vec<u8>, u32, u32) {
   //let image = ImageReader::open(path).unwrap().decode().unwrap().into_rgba8();
   let image = ImageReader::open(path).unwrap().decode().unwrap().into_rgb8();
 
@@ -224,7 +224,7 @@ pub fn open_image(path: &PathBuf) -> (Vec<u8>, u32, u32) {
   (buffer, width, height)
 }
 
-pub fn save_image(buffer: Vec<u8>, path: PathBuf, width: u32, height: u32) {
+pub fn save_image<P: AsRef<Path>>(buffer: Vec<u8>, path: P, width: u32, height: u32) {
   let _ = image::save_buffer(path, &buffer, width, height, ExtendedColorType::Rgb8);
 }
 
